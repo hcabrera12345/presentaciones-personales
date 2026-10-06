@@ -1,0 +1,522 @@
+<title>Lucy de Datec</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Space+Grotesk:wght@500;700&display=swap');
+
+  /* Layout: single-column report, accent sidebar markers, compact data tables */
+  :root {
+    --bg: #FAFBFD;
+    --fg: #1E2330;
+    --surface: #FFFFFF;
+    --muted: #6B7280;
+    --border: #E2E5EB;
+    --accent: #0D6EFD;
+    --accent-soft: #E8F0FE;
+    --highlight: #00B67A;
+    --highlight-soft: #E6F9F1;
+    --warn: #F59E0B;
+    --warn-soft: #FEF9E7;
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F1117;
+      --fg: #E4E7ED;
+      --surface: #1A1D27;
+      --muted: #8B91A0;
+      --border: #2A2E3A;
+      --accent: #5B9CFF;
+      --accent-soft: #1A2744;
+      --highlight: #34D399;
+      --highlight-soft: #132B23;
+      --warn: #FBBF24;
+      --warn-soft: #2B2410;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F1117;
+    --fg: #E4E7ED;
+    --surface: #1A1D27;
+    --muted: #8B91A0;
+    --border: #2A2E3A;
+    --accent: #5B9CFF;
+    --accent-soft: #1A2744;
+    --highlight: #34D399;
+    --highlight-soft: #132B23;
+    --warn: #FBBF24;
+    --warn-soft: #2B2410;
+    color-scheme: dark;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.65;
+    padding-inline: 20px;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .report-header {
+    padding: 40px 0 24px;
+    border-bottom: 3px solid var(--accent);
+    margin-bottom: 32px;
+  }
+  .report-header .eyebrow {
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .report-header h1 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 5vw, 38px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0 0 10px;
+    text-wrap: balance;
+  }
+  .report-header .subtitle {
+    font-size: 16px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .meta-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 14px;
+  }
+  .meta-line span::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 6px;
+    vertical-align: 2px;
+  }
+
+  /* Sections */
+  h2 {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    margin: 36px 0 14px;
+    padding-left: 14px;
+    border-left: 4px solid var(--accent);
+    line-height: 1.3;
+    text-wrap: balance;
+  }
+  h3 {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    margin: 22px 0 8px;
+    color: var(--fg);
+  }
+  p { margin: 0 0 12px; }
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin-bottom: 5px; }
+  strong { font-weight: 700; }
+
+  /* Highlight box */
+  .callout {
+    background: var(--accent-soft);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 18px;
+    margin: 18px 0;
+    font-size: 14px;
+  }
+  .callout.green {
+    background: var(--highlight-soft);
+    border-left-color: var(--highlight);
+  }
+  .callout.yellow {
+    background: var(--warn-soft);
+    border-left-color: var(--warn);
+  }
+
+  /* Agent cards */
+  .agents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .agent-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .agent-card .icon {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .agent-card .name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+  .agent-card .role {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* Sector chips */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 12px 0 16px;
+  }
+  .chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 24px;
+    margin: 16px 0;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 4px;
+    bottom: 4px;
+    width: 2px;
+    background: var(--border);
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 18px;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -22px;
+    top: 7px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+  }
+  .timeline-item .date {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    font-family: var(--font-display);
+    letter-spacing: 0.02em;
+  }
+  .timeline-item .event {
+    font-size: 14px;
+    margin-top: 2px;
+  }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 16px 0;
+  }
+  .flow-step {
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow {
+    color: var(--muted);
+    font-size: 16px;
+  }
+
+  /* Table */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 14px;
+  }
+  .data-table th {
+    text-align: left;
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--border);
+  }
+  .data-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  /* Sources */
+  .sources {
+    margin-top: 36px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .sources h2 { border-left: none; padding-left: 0; font-size: 16px; margin-top: 0; }
+  .sources a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 13px;
+    word-break: break-all;
+  }
+  .sources a:hover { text-decoration: underline; }
+  .sources li { margin-bottom: 8px; }
+
+  @media (max-width: 500px) {
+    .agents-grid { grid-template-columns: 1fr 1fr; }
+    .flow-step { font-size: 11px; padding: 6px 10px; }
+  }
+</style>
+
+<header class="report-header">
+  <div class="eyebrow">Reporte de Investigación</div>
+  <h1>Lucy de Datec: Ecosistema de Agentes de IA para Comercio por WhatsApp</h1>
+  <p class="subtitle">Análisis completo del producto, su arquitectura, funcionamiento e integración con SAP Grow Fast</p>
+  <div class="meta-line">
+    <span>Octubre 2026</span>
+    <span>Datec Corp</span>
+    <span>Bolivia / LATAM</span>
+  </div>
+</header>
+
+<h2>Qué es Lucy</h2>
+<p><strong>Lucy</strong> es un <strong>ecosistema de agentes de inteligencia artificial</strong> desarrollado por <strong>Datec Corp</strong>, diseñado para atender, vender y gestionar conversaciones comerciales por <strong>WhatsApp</strong> de forma automática, las 24 horas del día, los 7 días de la semana.</p>
+<p>No se trata de un chatbot convencional ni de un único agente: Lucy es una plataforma compuesta por múltiples agentes especializados que ejecutan el <strong>ciclo completo de ventas</strong> dentro de la conversación de WhatsApp, desde la consulta del producto hasta el pago con QR, facturación, seguimiento de pedido y posventa, sin intervención humana del dueño del negocio.</p>
+
+<div class="callout">
+  <strong>Dato clave:</strong> Lucy es la primera solución de IA aplicada al comercio en Bolivia con respaldo enterprise, con la infraestructura, seguridad y soporte que brinda Datec tras 27 años de trayectoria y operaciones en 6 países.
+</div>
+
+<h2>La empresa detrás: Datec Corp</h2>
+<p>Datec fue fundada en <strong>1999 en Santa Cruz de la Sierra, Bolivia</strong>. En 27 años pasó de ser un equipo de 3 personas a una corporación con <strong>470 empleados</strong> y presencia en <strong>6 países</strong>: Bolivia, Estados Unidos, Perú, Honduras, El Salvador y Costa Rica.</p>
+<p>Es partner oficial de marcas como <strong>SAP, IBM, Google, Cisco y Nutanix</strong>. Su división de innovación, <strong>dInnova</strong>, funciona como Centro de Experiencia e Innovación Tecnológica, un espacio donde la tecnología no se explica sino que se prueba en tiempo real.</p>
+<p>Lucy representa la <strong>primera marca de producto de Datec para el mercado masivo</strong>, llevando la potencia de tecnología enterprise a negocios en crecimiento.</p>
+
+<h2>Cómo funciona: el ciclo completo de ventas</h2>
+<p>Lucy ejecuta todo el ciclo comercial dentro de WhatsApp, sin que el cliente necesite salir de la conversación:</p>
+
+<div class="flow">
+  <span class="flow-step">Consulta del cliente</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step">Catálogo e inventario</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step">Asesoría de producto</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step">Pago con QR</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step">Facturación</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step">Seguimiento</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step">Posventa</span>
+</div>
+
+<h3>Integraciones en tiempo real</h3>
+<ul>
+  <li><strong>ERP y CRM del negocio:</strong> verifica inventario en tiempo real y sincroniza el catálogo de productos.</li>
+  <li><strong>Pasarela de pagos QR:</strong> genera códigos de pago directamente en el chat.</li>
+  <li><strong>Facturación electrónica:</strong> emite factura automáticamente tras la compra.</li>
+  <li><strong>Seguimiento posventa:</strong> tracking del pedido y atención posterior, todo en WhatsApp.</li>
+</ul>
+
+<div class="callout green">
+  <strong>Escalamiento inteligente:</strong> cuando una consulta requiere atención humana, Lucy escala al operador transfiriendo el <strong>contexto completo</strong> de la conversación, sin que el cliente tenga que repetir información.
+</div>
+
+<h2>El Squad: los agentes especializados</h2>
+<p>Lucy opera con un equipo (<em>squad</em>) de agentes de IA, cada uno orientado a una función específica del negocio:</p>
+
+<div class="agents-grid">
+  <div class="agent-card">
+    <div class="icon">V</div>
+    <div class="name">Ventas (Sales)</div>
+    <div class="role">Agente comercial. Atiende clientes, asesora sobre productos y cierra ventas por WhatsApp.</div>
+  </div>
+  <div class="agent-card">
+    <div class="icon">A</div>
+    <div class="name">Andrew</div>
+    <div class="role">Agente de datos. Interpreta información, genera reportes y acelera decisiones basadas en datos.</div>
+  </div>
+  <div class="agent-card">
+    <div class="icon">O</div>
+    <div class="name">Opera</div>
+    <div class="role">Agente de operaciones. Automatiza procesos operativos, logística y seguimiento.</div>
+  </div>
+  <div class="agent-card">
+    <div class="icon">P</div>
+    <div class="name">Prixia</div>
+    <div class="role">Agente de pricing. Gestiona precios, descuentos y estrategias de pricing dinámico.</div>
+  </div>
+</div>
+
+<h2>Rubros y sectores atendidos</h2>
+<p>Lucy está diseñada para cinco sectores principales:</p>
+<div class="chips">
+  <span class="chip">Gastronomía</span>
+  <span class="chip">Retail</span>
+  <span class="chip">Servicios</span>
+  <span class="chip">Entretenimiento</span>
+  <span class="chip">Profesionales independientes</span>
+</div>
+
+<h2>Grow Fast: integración con SAP Cloud ERP</h2>
+<p>En julio de 2026, Datec lanzó <strong>Grow Fast</strong> en alianza con <strong>SAP</strong>: una solución que unifica <strong>SAP Cloud ERP</strong> con el ecosistema Lucy. Fue presentado en la novena edición de <strong>dInnova Accelerate</strong>.</p>
+
+<h3>Los tres frentes de Grow Fast</h3>
+<table class="data-table">
+  <thead>
+    <tr><th>Frente</th><th>Descripción</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Velocidad</strong></td>
+      <td>Propuesta lista para operar en semanas, autónoma desde el primer día.</td>
+    </tr>
+    <tr>
+      <td><strong>Visibilidad</strong></td>
+      <td>Conecta funciones críticas: finanzas, cadena de suministro, ventas e integraciones en una sola plataforma.</td>
+    </tr>
+    <tr>
+      <td><strong>Inteligencia</strong></td>
+      <td>IA y agentes especializados (Lucy + squad) que automatizan, interpretan datos y aceleran decisiones.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout yellow">
+  <strong>Propuesta de valor:</strong> Grow Fast permite a empresas en crecimiento operar con ERP de clase mundial + IA integrada en semanas, no en años. Combina la robustez de SAP con la automatización comercial de Lucy.
+</div>
+
+<h2>Línea de tiempo</h2>
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="date">1999</div>
+    <div class="event">Fundación de Datec en Santa Cruz de la Sierra, Bolivia.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="date">2024</div>
+    <div class="event">Expansión de Datec Latam a Centroamérica (El Salvador, Costa Rica) con soluciones de IA.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="date">30 abril 2026</div>
+    <div class="event">Lanzamiento oficial de Lucy: ecosistema de agentes de IA para ventas por WhatsApp.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="date">6 mayo 2026</div>
+    <div class="event">Lucy oficializa su ingreso al mercado nacional boliviano.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="date">Julio 2026</div>
+    <div class="event">Lanzamiento de Grow Fast (SAP + Lucy) en dInnova Accelerate. Consolidación de dInnova como Centro de Innovación.</div>
+  </div>
+</div>
+
+<h2>Diferenciadores competitivos</h2>
+<table class="data-table">
+  <thead>
+    <tr><th>Aspecto</th><th>Lucy de Datec</th><th>Chatbots genéricos</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Arquitectura</strong></td>
+      <td>Ecosistema de múltiples agentes especializados</td>
+      <td>Agente único con respuestas predefinidas</td>
+    </tr>
+    <tr>
+      <td><strong>Ciclo de venta</strong></td>
+      <td>Completo: consulta &rarr; pago &rarr; factura &rarr; posventa</td>
+      <td>Solo atención y FAQ</td>
+    </tr>
+    <tr>
+      <td><strong>Integración ERP</strong></td>
+      <td>SAP Cloud ERP nativo (Grow Fast)</td>
+      <td>Integraciones limitadas o manuales</td>
+    </tr>
+    <tr>
+      <td><strong>Respaldo</strong></td>
+      <td>27 años de infraestructura enterprise, 470 empleados, 6 países</td>
+      <td>Startups o herramientas SaaS genéricas</td>
+    </tr>
+    <tr>
+      <td><strong>Escalamiento</strong></td>
+      <td>Transferencia con contexto completo al operador humano</td>
+      <td>Corte abrupto o reinicio de conversación</td>
+    </tr>
+    <tr>
+      <td><strong>IA nativa</strong></td>
+      <td>IA es la base del producto, no un complemento</td>
+      <td>IA como feature adicional</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Planes y acceso</h2>
+<p>Lucy ofrece planes diferenciados accesibles desde su sitio web: <strong>lucy.datec.ai</strong>. Los precios específicos no están publicados en medios abiertos y se gestionan directamente desde la plataforma. El evento <strong>Lucy Experience</strong>, organizado por Datec, funciona como punto de contacto donde los negocios pueden ver demostraciones en vivo del agente de ventas operando 24/7.</p>
+
+<h2>Conclusiones y relevancia</h2>
+<ul>
+  <li><strong>Lucy no es un chatbot</strong>, es un ecosistema de agentes de IA especializados que ejecutan el ciclo comercial completo por WhatsApp.</li>
+  <li>Es el <strong>primer producto de IA comercial en Bolivia con respaldo enterprise</strong> de una corporación con 27 años de trayectoria.</li>
+  <li>Su integración con <strong>SAP Cloud ERP a través de Grow Fast</strong> la posiciona como solución integral para empresas medianas en crecimiento.</li>
+  <li>El squad de agentes (Ventas, Andrew, Opera, Prixia) cubre funciones comerciales, de datos, operativas y de pricing.</li>
+  <li>Está orientada a <strong>5 rubros</strong>: gastronomía, retail, servicios, entretenimiento y profesionales independientes.</li>
+  <li>Representa el movimiento de Datec Corp del mercado enterprise hacia el <strong>mercado masivo</strong> de negocios en crecimiento en LATAM.</li>
+</ul>
+
+<section class="sources">
+  <h2>Fuentes</h2>
+  <ol>
+    <li><a href="https://lucy.datec.ai/">Lucy &middot; Agente de Ventas IA por WhatsApp &mdash; lucy.datec.ai</a></li>
+    <li><a href="https://eldeber.com.bo/te-puede-interesar/datec-lanza-lucy-ecosistema-agentes-inteligencia-artificial-vende-whatsapp-24-7-negocios-latam_1776108033">Datec lanza Lucy: ecosistema de agentes de IA &mdash; El Deber</a></li>
+    <li><a href="https://www.lostiempos.com/actualidad/economia/20260430/datec-lanza-lucy-ecosistema-ia-vender-whatsapp-interrupciones">Datec lanza Lucy, el ecosistema de IA para vender por WhatsApp &mdash; Los Tiempos</a></li>
+    <li><a href="https://nuevaeconomia.com.bo/news/datec-lanza-lucy-un-ecosistema-de-agentes-de-inteligencia-artificial-que-vende-por-whatsapp-247-para-negocios-en-latam">Datec lanza Lucy &mdash; Nueva Economía</a></li>
+    <li><a href="https://www.eldiario.net/portal/2026/05/06/lucy-oficializa-su-ingreso-al-mercado-nacional/">Lucy oficializa su ingreso al mercado nacional &mdash; El Diario</a></li>
+    <li><a href="https://www.economy.com.bo/articulo/branding-y-rse/datec-sap-transforman-paradigma-empresarial-bolivia-lanzamiento-grow-fast/20260713193148023219.html">Datec y SAP: lanzamiento de Grow Fast &mdash; Economy Bolivia</a></li>
+    <li><a href="https://eldeber.com.bo/te-puede-interesar/datec-lanza-grow-fast-consolida-dinnova-centro-experiencia-innovacion-tecnologica_1783605177">Datec lanza Grow Fast y consolida dInnova &mdash; El Deber</a></li>
+    <li><a href="https://www.datec.com.bo/eventos/lucy-experience-tu-agente-de-ventas-24-7/">Lucy Experience: tu agente de ventas 24/7 &mdash; datec.com.bo</a></li>
+    <li><a href="https://www.datec.com.bo/agentes-ia-inteligencia-que-actua-decide-y-transforma-tu-empresa/">Agentes IA: inteligencia que actúa y transforma &mdash; datec.com.bo</a></li>
+  </ol>
+</section>
