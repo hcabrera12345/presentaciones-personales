@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block titulo %}Entrevistas{% endblock %}
+{% block contenido %}
+{% if aviso %}<div class="aviso">{{ aviso }}</div>{% endif %}
+<div class="rejilla">
+  <form class="tarjeta" method="post" action="/videos/enlace">
+    <h2 style="margin-top:0">Procesar un video de YouTube</h2>
+    <input type="url" name="url" placeholder="https://www.youtube.com/watch?v=…" required>
+    <label class="fila mut" style="margin:8px 0"><input type="checkbox" name="solo_analisis" value="true"> Es de otro canal (solo análisis, no se publica)</label>
+    <button>Procesar</button>
+  </form>
+  <form class="tarjeta" method="post" action="/videos/archivo" enctype="multipart/form-data">
+    <h2 style="margin-top:0">Subir un archivo de video</h2>
+    <input type="file" name="archivo" accept="video/*" required>
+    <p class="mut">Para streamings completos, usa mejor el enlace de YouTube.</p>
+    <button>Subir y procesar</button>
+  </form>
+</div>
+<h2>Últimas entrevistas</h2>
+<table>
+  <tr><th>Título</th><th>Invitado</th><th>Origen</th><th>Estado</th><th>Fecha</th></tr>
+  {% for v in videos %}
+  <tr>
+    <td><a href="/videos/{{ v.id }}">{{ v.titulo or "(sin título aún)" }}</a></td>
+    <td>{{ v.invitado or "—" }}</td><td>{{ v.origen }}</td>
+    <td><span class="estado {{ v.estado }}">{{ v.estado }}</span></td>
+    <td class="mut">{{ v.creado_en.strftime("%d/%m %H:%M") }}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="5" class="mut">Todavía no hay entrevistas procesadas.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

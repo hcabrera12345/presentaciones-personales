@@ -1,0 +1,54 @@
+# Infraestructura en Render (Blueprint). Los secretos se cargan en el panel de Render
+# con un Environment Group llamado "agente-ac" (sync: false = no se guardan en el repositorio).
+services:
+  - type: web
+    name: agente-ac-panel
+    runtime: docker
+    plan: starter
+    region: ohio
+    healthCheckPath: /salud
+    envVars:
+      - fromGroup: agente-ac
+
+  - type: worker
+    name: agente-ac-trabajador
+    runtime: docker
+    plan: standard
+    region: ohio
+    dockerCommand: python -m worker.main
+    envVars:
+      - fromGroup: agente-ac
+
+envVarGroups:
+  - name: agente-ac
+    envVars:
+      - key: ENTORNO
+        value: produccion
+      - key: CLAUDE_MODELO
+        value: claude-opus-5-5
+      - key: DATABASE_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: PROXY_YOUTUBE
+        sync: false
+      - key: CANAL_YOUTUBE_ID
+        sync: false
+      - key: WHATSAPP_TOKEN
+        sync: false
+      - key: WHATSAPP_PHONE_ID
+        sync: false
+      - key: WHATSAPP_VERIFY_TOKEN
+        sync: false
+      - key: FACEBOOK_PAGE_ID
+        sync: false
+      - key: FACEBOOK_TOKEN
+        sync: false

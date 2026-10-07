@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block titulo %}Agente IA{% endblock %} · Asuntos Centrales</title>
+<style>
+  :root { --rojo:#d61420; --tinta:#16161a; --gris:#6b6b75; --borde:#e3e3e8; --fondo:#f6f6f8; --amarillo:#ffd600; }
+  * { box-sizing:border-box }
+  body { margin:0; font:15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; color:var(--tinta); background:var(--fondo) }
+  header { background:var(--tinta); color:#fff; padding:12px 20px; display:flex; align-items:center; gap:16px }
+  header .marca { background:#fff; color:#000; font-weight:900; padding:3px 10px; border-bottom:4px solid var(--rojo) }
+  header a { color:#fff; text-decoration:none } header .der { margin-left:auto; color:#c9c9d1; font-size:13px }
+  main { max-width:1180px; margin:0 auto; padding:24px 16px }
+  h1 { font-size:24px; margin:0 0 16px } h2 { font-size:18px; border-left:5px solid var(--rojo); padding-left:10px; margin:28px 0 12px }
+  .tarjeta { background:#fff; border:1px solid var(--borde); border-radius:10px; padding:16px }
+  .rejilla { display:grid; gap:16px; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)) }
+  table { width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--borde); border-radius:10px; overflow:hidden }
+  th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--borde) } th { font-size:12px; color:var(--gris); text-transform:uppercase }
+  input[type=text], input[type=url], textarea { width:100%; padding:9px 10px; border:1px solid var(--borde); border-radius:8px; font:inherit }
+  button, .boton { background:var(--rojo); color:#fff; border:0; border-radius:8px; padding:9px 14px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block }
+  button.sec { background:#fff; color:var(--tinta); border:1px solid var(--borde) }
+  .estado { font-size:12px; font-weight:700; padding:2px 8px; border-radius:99px; background:#ececf1 }
+  .estado.listo, .estado.aprobado, .estado.publicado { background:#e3f4e9; color:#1d6b3c }
+  .estado.error, .estado.rechazado { background:#fde5e6; color:#a1121b }
+  .estado.procesando, .estado.en_cola { background:#fff6cc; color:#7a5d00 }
+  .aviso { background:#fff6cc; border:1px solid #f1df8a; padding:10px 14px; border-radius:8px; margin-bottom:16px }
+  .cita { color:var(--gris); font-style:italic } img, video { max-width:100%; border-radius:8px; display:block }
+  .fila { display:flex; gap:8px; flex-wrap:wrap; align-items:center } .mut { color:var(--gris); font-size:13px }
+</style>
+</head>
+<body>
+<header>
+  <a href="/" class="marca">ASUNTOS CENTRALES</a><span>Agente de IA de contenido</span>
+  {% if usuario %}<span class="der">{{ usuario.nombre }} · {{ usuario.rol }}</span>{% endif %}
+</header>
+<main>{% block contenido %}{% endblock %}</main>
+</body>
+</html>

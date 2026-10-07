@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block titulo %}{{ video.titulo }}{% endblock %}
+{% block contenido %}
+<p><a href="/">← Entrevistas</a></p>
+<h1>{{ video.titulo or "Procesando…" }}</h1>
+<p class="fila"><span class="estado {{ video.estado }}">{{ video.estado }}</span>
+  {% if video.invitado %}<span>{{ video.invitado }}</span>{% endif %}
+  {% if video.solo_analisis %}<span class="estado">solo análisis</span>{% endif %}</p>
+{% if video.resumen %}<p>{{ video.resumen }}</p>{% endif %}
+{% if video.error %}<div class="aviso">Error: {{ video.error }}</div>{% endif %}
+{% if video.estado in ("en_cola", "procesando") %}<p class="mut">El agente está trabajando. Recarga la página en un par de minutos.</p>{% endif %}
+
+{% set titulares = piezas | selectattr("tipo", "equalto", "titular") | list %}
+{% set clips = piezas | selectattr("tipo", "equalto", "clip") | list %}
+{% set notas = piezas | selectattr("tipo", "equalto", "nota") | list %}
+
+{% if titulares %}<h2>Titulares</h2>
+<div class="rejilla">
+  {% for p in titulares %}
+  <div class="tarjeta">
+    {% if p.url %}<img src="{{ p.url }}" alt="">{% endif %}
+    <p><span class="estado">{{ p.contenido.etiqueta }}</span> {% if not p.cita_verificada %}<span class="estado error">cita sin verificar</span>{% endif %}</p>
+    <form method="post" action="/piezas/{{ p.id }}/editar">
+      <input type="hidden" name="campo" value="titular">
+      <textarea name="texto" rows="2">{{ p.contenido.titular }}</textarea>
+      <p class="cita">«{{ p.contenido.cita_textual }}»</p>
+      <div class="fila"><button class="sec">Guardar edición</button>
+        <button class="sec" formaction="/piezas/{{ p.id }}/descartar">Descartar</button></div>
+    </form>
+  </div>
+  {% endfor %}
+</div>{% endif %}
+
+{% if clips %}<h2>Clips verticales</h2>
+<div class="rejilla">
+  {% for p in clips %}
+  <div class="tarjeta">
+    {% if p.url %}<video src="{{ p.url }}" controls preload="metadata" style="aspect-ratio:9/16;background:#000"></video>{% endif %}
+    <p><strong>{{ p.contenido.titulo_gancho }}</strong></p>
+    <p class="mut">{{ p.contenido.por_que_funciona }}</p>
+    <form method="post" action="/piezas/{{ p.id }}/descartar"><button class="sec">Descartar</button></form>
+  </div>
+  {% endfor %}
+</div>{% endif %}
+
+{% for p in notas %}<h2>Nota</h2>
+<div class="tarjeta">
+  <h3 style="margin-top:0">{{ p.contenido.titulo }}</h3>
+  <p><em>{{ p.contenido.bajada }}</em></p>
+  <div style="white-space:pre-line">{{ p.contenido.cuerpo }}</div>
+  <p class="mut">Texto para Facebook: {{ p.contenido.texto_facebook }}</p>
+</div>{% endfor %}
+
+{% if video.estado not in ("en_cola", "procesando") %}
+<h2>Pedir otra versión</h2>
+<form class="tarjeta" method="post" action="/videos/{{ video.id }}/regenerar">
+  <input type="text" name="instruccion" placeholder="Ej.: titulares más fuertes, un clip sobre el tema del litio…">
+  <p><button>Regenerar</button></p>
+</form>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block titulo %}Ingresar{% endblock %}
+{% block contenido %}
+<div class="tarjeta" style="max-width:420px;margin:60px auto;text-align:center">
+  <h1>Ingresar</h1>
+  <p class="mut">Usa tu cuenta de Google del canal. Si es tu primer ingreso, un administrador debe activar tu cuenta.</p>
+  <button id="google">Ingresar con Google</button>
+  <p id="mensaje" class="mut"></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const sb = supabase.createClient({{ supabase_url|tojson }}, {{ supabase_anon_key|tojson }});
+  const guardar = (s) => {
+    if (!s) return false;
+    document.cookie = `sb_token=${s.access_token}; path=/; max-age=3600; samesite=lax; secure`;
+    return true;
+  };
+  sb.auth.onAuthStateChange((_e, s) => { if (guardar(s)) location.href = "/"; });
+  document.getElementById("google").onclick = () =>
+    sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.origin + "/login" } });
+</script>
+{% endblock %}
