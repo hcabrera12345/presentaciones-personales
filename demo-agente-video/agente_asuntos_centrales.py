@@ -27,6 +27,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -36,6 +37,8 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageStat
 from pydantic import BaseModel, Field
+
+os.environ.setdefault("HF_HUB_DISABLE_SYMLINKS_WARNING", "1")  # aviso inofensivo en Windows
 
 CANAL = "ASUNTOS CENTRALES"
 MODELO = "claude-opus-5-5"
@@ -125,7 +128,7 @@ def obtener_video(fuente: str, salida: Path) -> tuple[Path, str]:
 # --------------------------------------------------------------------------- #
 # Paso 2: transcribir
 # --------------------------------------------------------------------------- #
-def transcribir(video: Path, salida: Path, modelo_whisper: str, idioma: str) -> list[dict]:
+def transcribir(video: Path, salida: Path, modelo_whisper: str, idioma: str, gpu: bool = False) -> list[dict]:
     archivo = salida / "transcripcion.json"
     if archivo.exists():
         info("transcripción ya existe, la reutilizo")
@@ -134,7 +137,10 @@ def transcribir(video: Path, salida: Path, modelo_whisper: str, idioma: str) -> 
     from faster_whisper import WhisperModel
 
     info(f"transcribiendo con Whisper '{modelo_whisper}' (puede tardar)…")
-    modelo = WhisperModel(modelo_whisper, device="auto", compute_type="auto")
+    # Por defecto CPU: con device="auto" se intenta usar una tarjeta NVIDIA aunque falten las
+    # librerías CUDA (cublas64_12.dll) y la transcripción falla. --gpu solo si CUDA está instalado.
+    modelo = WhisperModel(modelo_whisper, device="cuda" if gpu else "cpu",
+                          compute_type="float16" if gpu else "int8")
     segmentos_it, _ = modelo.transcribe(str(video), language=idioma, word_timestamps=True, vad_filter=True)
     segmentos = []
     total = duracion_video(video)
@@ -508,6 +514,7 @@ def main() -> None:
     ap.add_argument("--salida", help="carpeta de salida (por defecto salida/<nombre>)")
     ap.add_argument("--whisper", default="small", help="modelo Whisper: tiny, base, small, medium, large-v3")
     ap.add_argument("--idioma", default="es")
+    ap.add_argument("--gpu", action="store_true", help="transcribir con GPU NVIDIA (requiere CUDA 12 y cuDNN)")
     ap.add_argument("--fuente-letra", dest="fuente_letra", help="ruta a una fuente .ttf/.otf gruesa")
     args = ap.parse_args()
 
@@ -528,7 +535,7 @@ def main() -> None:
     info(f"{titulo} — {mmss(duracion)}")
 
     paso(2, "Transcribir la entrevista")
-    segmentos = transcribir(video, salida, args.whisper, args.idioma)
+    segmentos = transcribir(video, salida, args.whisper, args.idioma, args.gpu)
     info(f"{len(segmentos)} frases, {sum(len(s['texto'].split()) for s in segmentos)} palabras")
 
     paso(3, "Claude analiza la entrevista y propone titulares y clips")
